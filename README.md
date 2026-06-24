@@ -31,6 +31,12 @@ To build and install the `positron-latest-bin` package, follow these steps:
   makepkg -si
 ```
 
+4. **Submit to AUR**: Use the `makepkg` command to regenerate `.SRCINFO` file:
+
+```bash
+makepkg --printsrcinfo > .SRCINFO
+```
+
 This command will download the necessary files, build the package, and install it on your system.
 
 ## Known Issues
