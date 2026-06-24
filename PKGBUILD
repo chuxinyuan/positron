@@ -1,85 +1,121 @@
-# Maintainer: leothelion <ponte-vecchio>
-
-pkgname=positron-ide-devel-bin
-_pkgname=positron-ide
-pkgver=2026.06.0.211
-pkgver_url=2026.06.0-211
+# Maintainer: chuxinyuan <chuxinyuan@outlook.com>
+pkgname=positron-latest-bin
+pkgver=2026.06.1.6
+_upstream_pkgver=${pkgver%.*}-${pkgver##*.}
 pkgrel=1
-pkgdesc="A next-generation data science IDE. Positron is an extensible, polyglot tool for writing code and exploring data in Python, R, and other languages."
-arch=('x86_64' 'aarch64')
-options=('!debug')
-url="https://github.com/posit-dev/positron"
-posit_url="https://cdn.posit.co/positron/releases/deb"
-licence=('Elastic-2.0')
-license=('Elastic-2.0')
+pkgdesc='A next-generation data science IDE. Positron is an extensible, polyglot tool for writing code and exploring data in Python, R, and other languages.'
+arch=(
+    'x86_64'
+    'aarch64'
+)
+url='https://github.com/posit-dev/positron'
+license=(
+    'Elastic-2.0'
+)
 depends=(
-    'ca-certificates'
     'alsa-lib'
     'at-spi2-core'
-    'atkmm'
-    # 'glibc' # mesa
-    # 'cairo' # pango
-    'libcups'
-    'curl'
+    'cairo'
     'dbus'
-    # 'libdrm' # mesa
-    # 'expat' # mesa
-    'mesa'
-    # 'glib2' # pango
-    'krb5'
+    'expat'
+    'glib2'
     'gtk3'
-    'gtk4'
-    # 'nspr' # nss
-    'nss'
-    'pango'
-    # 'gcc-libs' # mesa
-    'systemd-libs' # for udev1
-    # 'libx11' # mesa, pango
-    # 'libxcb' # mesa
+    'libcups'
+    'libsecret'
+    'libx11'
+    'libxcb'
     'libxcomposite'
     'libxdamage'
-    # 'libxext' # mesa
-    # 'libxfixes' # mesa
+    'libxext'
+    'libxfixes'
     'libxkbcommon'
-    # 'libxkbfile' # mesa
+    'libxkbfile'
     'libxrandr'
+    'mesa'
+    'nspr'
+    'nss'
+    'pango'
+    'systemd-libs'
     'xdg-utils'
 )
 optdepends=(
+    'bash-completion: command-line completion'
+    'nodejs: Node.js runtime support'
+    'python: Python runtime support'
+    'r: R runtime support'
     'vulkan-intel: Intel Vulkan driver'
     'vulkan-radeon: Radeon Vulkan driver'
     'vulkan-icd-loader: Vulkan ICD loader'
-    'bash-completion: Bash completion support'
-    'zsh-completions: Zsh completion support'
-    'nodejs: Extra functionality for Positron'
+    'webkit2gtk-4.1: Microsoft account authentication'
 )
-provides=("positron")
-conflicts=("positron-bin")
-source_x86_64=("${posit_url}/x86_64/Positron-${pkgver_url}-x64.deb")
-source_aarch64=("${posit_url}/arm64/Positron-${pkgver_url}-arm64.deb")
-sha256sums_x86_64=('62f9f07954ca02fc594d1e7f158d555add371b1e0b15ad9f68bf99d00602b696')
-sha256sums_aarch64=('747f2471752e4f744a48d2236c8bbf705014b2fdbcf606e33261bc2434d2a23d')
+provides=(
+    'positron-ide'
+)
+conflicts=(
+    'positron-ide-devel-bin'
+    'positron-ide-bin'
+)
+options=(
+    '!strip'
+    '!debug'
+)
+source_x86_64=(
+    "$pkgname-$pkgver-x86_64.deb::https://cdn.posit.co/positron/releases/deb/x86_64/Positron-${_upstream_pkgver}-x64.deb"
+)
+source_aarch64=(
+    "$pkgname-$pkgver-aarch64.deb::https://cdn.posit.co/positron/releases/deb/arm64/Positron-${_upstream_pkgver}-arm64.deb"
+)
+noextract=(
+    "$pkgname-$pkgver-x86_64.deb"
+    "$pkgname-$pkgver-aarch64.deb"
+)
+sha256sums_x86_64=('91354730d45b3e82e0d946be168e9469489403a3aa3f03405d7a60b6a6818e5b')
+sha256sums_aarch64=('5dcf999583ea2a4899813be97caa3bf4b5c6843d2fa1a9c48fdf1a24eb1f8e8d')
 
-package(){
-    shopt -s extglob
+package() {
+    local _deb
 
-    msg "Converting .deb package"
-    if [ "${CARCH}" = "x86_64" ]; then
-        ar x Positron-${pkgver_url}-x64.deb
-    elif [ "${CARCH}" = "aarch64" ]; then
-        ar x Positron-${pkgver_url}-arm64.deb
-    fi
+    case "$CARCH" in
+    x86_64)
+        _deb="$srcdir/$pkgname-$pkgver-x86_64.deb"
+        ;;
+    aarch64)
+        _deb="$srcdir/$pkgname-$pkgver-aarch64.deb"
+        ;;
+    esac
 
-    cd "${srcdir}"
-    tar --extract --xz --file data.tar.xz -C "${pkgdir}"
+    ar p "$_deb" data.tar.xz | bsdtar -xJf - -C "$pkgdir"
 
-    # copy licence from root directory
-    # msg "Copying licence"
-    # install -Dm644 "../LICENCE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+    install -dm755 \
+        "$pkgdir/usr/bin" \
+        "$pkgdir/usr/share/licenses/$pkgname"
 
-    msg "Installing"
-    install -d "${pkgdir}/usr/share/appdata"
-    install -d "${pkgdir}/usr/share/applications"
-    install -d "${pkgdir}/usr/share/mime/packages"
-    install -d "${pkgdir}/usr/share/positron"
+    ln -s /usr/share/positron/bin/positron "$pkgdir/usr/bin/positron"
+
+    sed -i \
+        -e 's|^Exec=/usr/share/positron/positron %F$|Exec=/usr/bin/positron %F|' \
+        -e 's|^Exec=/usr/share/positron/positron --new-window %F$|Exec=/usr/bin/positron --new-window %F|' \
+        "$pkgdir/usr/share/applications/positron.desktop"
+
+    sed -i \
+        -e 's|^Exec=/usr/share/positron/positron --open-url %U$|Exec=/usr/bin/positron --open-url %U|' \
+        "$pkgdir/usr/share/applications/positron-url-handler.desktop"
+
+    chmod 4755 "$pkgdir/usr/share/positron/chrome-sandbox"
+
+    # Fix world-writable files from upstream .deb
+    find "$pkgdir" -type f -perm /0002 -exec chmod o-w {} +
+
+    install -Dm644 \
+        "$pkgdir/usr/share/positron/resources/app/LICENSE.txt" \
+        "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+    install -Dm644 \
+        "$pkgdir/usr/share/positron/resources/app/NOTICE" \
+        "$pkgdir/usr/share/licenses/$pkgname/NOTICE"
+    install -Dm644 \
+        "$pkgdir/usr/share/positron/resources/app/ThirdPartyNotices.txt" \
+        "$pkgdir/usr/share/licenses/$pkgname/ThirdPartyNotices.txt"
+    install -Dm644 \
+        "$pkgdir/usr/share/positron/LICENSES.chromium.html" \
+        "$pkgdir/usr/share/licenses/$pkgname/LICENSES.chromium.html"
 }

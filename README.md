@@ -1,4 +1,4 @@
-# positron-ide-devel-bin
+# positron-latest-bin
 
 <!-- badges: start -->
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
@@ -7,16 +7,16 @@
 
 ## Overview
 
-This repository contains a [PKGBUILD](https://wiki.archlinux.org/title/PKGBUILD) script for building and installing the [`positron-ide-devel-bin`](https://aur.archlinux.org/packages/positron-ide-devel-bin) package from the Arch User Repository ([AUR](https://aur.archlinux.org/)).
+This repository contains a [PKGBUILD](https://wiki.archlinux.org/title/PKGBUILD) script for building and installing the [`positron-latest-bin`](https://aur.archlinux.org/packages/positron-latest-bin) package from the Arch User Repository ([AUR](https://aur.archlinux.org/)).
 
 ## Usage
 
-To build and install the `positron-ide-devel-bin` package, follow these steps:
+To build and install the `positron-latest-bin` package, follow these steps:
 
 1. **Clone the Repository**: Open your terminal and run the following command to clone this repository:
 
 ```bash
-  git clone https://github.com/ponte-vecchio/positron
+  git clone https://github.com/chuxinyuan/positron
 ```
 
 2. **Navigate to the Directory**: Change into the cloned repository's directory:
@@ -44,9 +44,9 @@ GitHub Copilot may fail to authenticate on fresh installations of Positron IDE o
 [![Licence: GPLv3](https://img.shields.io/badge/license-GPLv3-bd0000.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 ```text
-Copyright (C) 2026 Leothelion
+Copyright (C) 2026 Xinyuan Chu
 
-positron-ide-devel-bin is free software: you can redistribute it and/or modify
+positron-latest-bin is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by the Free
 Software Foundation, either version 3 of the License, or (at your option) any
 later version.
